@@ -1,6 +1,8 @@
 // Utility methods
 package main
 
+import "strings"
+
 func contains(slice []string, item string) bool {
 	set := make(map[string]struct{}, len(slice))
 	for _, s := range slice {
@@ -16,4 +18,10 @@ func merge(map1 map[interface{}]interface{}, map2 map[interface{}]interface{}) m
 		map1[k] = v
 	}
 	return map1
+}
+
+func getObjectValue(yaml *simpleyaml.Yaml, keyaddress string) interface{} {
+	if strings.Index(keyaddress) != -1 {
+		key1, key2 = strings.split(keyaddress, ".", 2)
+	}
 }
