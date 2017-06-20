@@ -10,3 +10,10 @@ func contains(slice []string, item string) bool {
 	_, ok := set[item]
 	return ok
 }
+
+func merge(map1 map[interface{}]interface{}, map2 map[interface{}]interface{}) map[interface{}]interface{} {
+	for k, v := range map2 {
+		map1[k] = v
+	}
+	return map1
+}

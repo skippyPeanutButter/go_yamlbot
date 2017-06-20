@@ -12,9 +12,10 @@ func validateRules(y *simpleyaml.Yaml) {
 	if y.Get("defaults").IsFound() {
 		defaults, err := y.Get("defaults").Map()
 		if err != nil {
+			fmt.Println("The 'defaults' section must be a yaml map type")
 			panic(err)
 		}
-		fmt.Println(defaults)
+		validateRulesKeys(defaults)
 	}
 
 	if !y.Get("rules").IsFound() {
@@ -25,14 +26,22 @@ func validateRules(y *simpleyaml.Yaml) {
 }
 
 func validateEachKey(y *simpleyaml.Yaml) {
+	var defaults map[interface{}]interface{}
+	if y.Get("defaults").IsFound() {
+		defaults, _ = y.Get("defaults").Map()
+	}
 	if !y.Get("rules").IsArray() {
 		err := "The rules section of a rules file must define a list of keys."
 		panic(err)
 	}
-
 	arr, _ := y.Get("rules").Array()
 	for _, keymap := range arr {
-		validateKey(keymap.(map[interface{}]interface{}))
+		if len(defaults) == 0 {
+			validateKey(keymap.(map[interface{}]interface{}))
+		} else {
+			merged_map := merge(defaults, keymap.(map[interface{}]interface{}))
+			validateKey(merged_map)
+		}
 	}
 }
 
@@ -78,5 +87,9 @@ func validateKeyExistsAndIsString(keymap map[interface{}]interface{}) {
 }
 
 func validateRequiredKeyExistsAndIsBool(keymap map[interface{}]interface{}) {
-
+	if keymap["required_key"] == nil || reflect.ValueOf(keymap["required_key"]).Kind() != reflect.Bool {
+		msg := "Missing required key 'required_key' for key: " + keymap["key"].(string) + "\n"
+		msg += "Or 'required_key' has a value that is not a Boolean.\n"
+		panic(msg)
+	}
 }
