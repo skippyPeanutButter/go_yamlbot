@@ -17,3 +17,11 @@ func merge(map1 map[interface{}]interface{}, map2 map[interface{}]interface{}) m
 	}
 	return map1
 }
+
+func toInterfaceArray(strarr []string) []interface{} {
+	new := make([]interface{}, len(strarr))
+	for i, v := range strarr {
+		new[i] = v
+	}
+	return new
+}

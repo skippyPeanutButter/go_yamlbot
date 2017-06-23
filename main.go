@@ -16,4 +16,5 @@ func main() {
 	}
 
 	validateRules(y)
+	validateYaml(y)
 }
